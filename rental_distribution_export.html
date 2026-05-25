@@ -25,7 +25,8 @@
     --r-sm:           8px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  button { touch-action: manipulation; }
 
   body {
     font-family: 'Cairo', sans-serif;
@@ -36,44 +37,31 @@
     direction: rtl;
   }
 
-  .page { max-width: 660px; margin: 0 auto; }
+  .page { max-width: 760px; margin: 0 auto; }
 
   /* ── Header ─────────────────────────── */
-  .header { text-align: center; margin-bottom: 2rem; }
+  .header { text-align: center; margin-bottom: 1.25rem; }
+  .header h1 { font-size: 36px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; }
 
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 10.5px;
+  /* ── Tabs ────────────────────────────── */
+  .tabs { display: flex; gap: 8px; margin-bottom: 0.75rem; }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 14px;
     font-weight: 500;
-    letter-spacing: 0.16em;
-    color: var(--text-3);
-    text-transform: uppercase;
-    margin-bottom: 12px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    transition: all 0.15s;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
-  .eyebrow::before, .eyebrow::after {
-    content: '';
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--border-strong);
-  }
-
-  .header h1 {
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
-  .header-sub {
-    font-size: 15px;
-    color: var(--text-3);
-    margin-top: 8px;
-    font-weight: 300;
-    line-height: 1.6;
-  }
+  .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: none; }
+  .tab-btn:not(.active):hover { background: var(--surface-2); color: var(--text); }
 
   /* ── Input card ──────────────────────── */
   .input-card {
@@ -87,13 +75,7 @@
     gap: 14px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
-  .input-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-3);
-    white-space: nowrap;
-    letter-spacing: 0.04em;
-  }
+  .input-label { font-size: 14px; font-weight: 500; color: var(--text-3); white-space: nowrap; }
   .divider-v { width: 1px; height: 30px; background: var(--border); flex-shrink: 0; }
   .input-card input {
     flex: 1;
@@ -121,7 +103,6 @@
     font-family: 'Cairo', sans-serif;
     white-space: nowrap;
     transition: background 0.15s, transform 0.1s;
-    letter-spacing: 0.02em;
   }
   .calc-btn:hover  { background: var(--accent-hover); }
   .calc-btn:active { transform: scale(0.97); }
@@ -134,6 +115,8 @@
     overflow: hidden;
     margin-bottom: 0.75rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
   }
   .card-header {
     display: flex;
@@ -141,56 +124,65 @@
     justify-content: space-between;
     padding: 13px 20px;
     border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
   }
-  .card-title {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--text-2);
-    text-transform: uppercase;
-  }
-  .count-badge {
-    font-size: 13px;
-    color: var(--text-3);
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2px 11px;
-    font-weight: 400;
-  }
+  .card-title { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: var(--text-2); text-transform: uppercase; }
+  .count-badge { font-size: 13px; color: var(--text-3); background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 11px; }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15.5px;
-    table-layout: fixed;
-  }
+  /* ── Tab panels ──────────────────────── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: flex; flex-direction: column; }
+
+  /* ── Tables ──────────────────────────── */
+  .table-wrapper { overflow-x: auto; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 15.5px; }
   thead th {
-    padding: 12px 20px;
-    font-size: 13px;
+    padding: 11px 16px;
+    font-size: 12.5px;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     color: var(--text-3);
     background: var(--surface-2);
     border-bottom: 1px solid var(--border);
     text-transform: uppercase;
+    white-space: nowrap;
   }
-  th.hn { text-align: right; width: 46%; }
-  th.hp { text-align: center; width: 20%; }
-  th.ha { text-align: left; width: 34%; direction: ltr; }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.12s;
-  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface-2); }
+  tbody td { padding: 13px 16px; vertical-align: middle; }
 
-  tbody td { padding: 15px 20px; vertical-align: middle; }
-  td.tn { text-align: right; font-weight: 500; color: var(--text); }
-  td.tp { text-align: center; direction: ltr; }
-  td.ta { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 16px; }
+  tfoot tr { border-top: 1.5px solid var(--border-strong); background: var(--surface-2); }
+  tfoot td { padding: 14px 16px; font-weight: 600; color: var(--text); font-size: 14px; }
 
+  /* ── Cell helpers ────────────────────── */
+  .c-name { text-align: right; font-weight: 500; }
+  .c-pct  { text-align: center; }
+  .c-num  { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; }
+  .c-flag { text-align: center; }
+  .c-num-bold { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px; }
+  tfoot .c-num      { font-weight: 700; font-size: 15px; }
+  tfoot .c-num-bold { font-size: 16px; font-weight: 700; }
+  tfoot .c-name     { color: var(--text-2); font-weight: 500; }
+
+  /* Tab 1 column widths */
+  #panel1 table { table-layout: fixed; }
+  #panel1 th:nth-child(1) { text-align: right; width: 48%; }
+  #panel1 th:nth-child(2) { text-align: center; width: 18%; }
+  #panel1 th:nth-child(3) { text-align: left; direction: ltr; width: 34%; }
+
+  /* Tab 2 — auto layout, allow horizontal scroll */
+  #panel2 table { table-layout: auto; min-width: 700px; }
+  #panel2 th:nth-child(1) { text-align: right; }
+  #panel2 th:nth-child(2) { text-align: center; }
+  #panel2 th:nth-child(3),
+  #panel2 th:nth-child(5),
+  #panel2 th:nth-child(6),
+  #panel2 th:nth-child(7) { text-align: left; direction: ltr; }
+  #panel2 th:nth-child(4) { text-align: center; }
+
+  /* ── Badges ──────────────────────────── */
   .name-pill { display: inline-flex; align-items: center; gap: 8px; }
   .swatch { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; opacity: 0.85; }
 
@@ -207,10 +199,17 @@
     font-variant-numeric: tabular-nums;
   }
 
-  tfoot tr { border-top: 1.5px solid var(--border-strong); background: var(--surface-2); }
-  tfoot td { padding: 16px 20px; font-weight: 600; color: var(--text); font-size: 15px; }
-  tfoot td.ta { direction: ltr; font-size: 18px; font-weight: 700; }
-  tfoot td.tn { color: var(--text-2); font-weight: 500; }
+  .flag-yes {
+    display: inline-block;
+    background: #ECFDF5;
+    color: #059669;
+    border: 1px solid #A7F3D0;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .flag-dash { color: var(--text-3); }
 
   /* ── Export bar ──────────────────────── */
   .export-bar { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -226,22 +225,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
     transition: all 0.15s;
-    letter-spacing: 0.02em;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   }
-  .exp-btn.primary {
-    background: var(--accent);
-    color: #fff;
-    border: 1px solid var(--accent);
-  }
-  .exp-btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-  .exp-btn.ghost {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--border-strong);
-  }
+  .exp-btn.primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
+  .exp-btn.primary:hover { background: var(--accent-hover); }
+  .exp-btn.ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); }
   .exp-btn.ghost:hover { background: var(--surface-2); }
   .exp-btn:active { transform: scale(0.97); }
 
@@ -260,24 +249,31 @@
     animation: fadeIn 0.2s ease;
   }
   .toast.show { display: block; }
-
   @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
   /* ── Print ───────────────────────────── */
   @media print {
     body { background: #fff; padding: 0; }
-    .input-card, .export-bar, .toast { display: none !important; }
-    .table-card, .page { box-shadow: none; }
-    .header { margin-bottom: 1rem; }
+    .tabs, .input-card, .export-bar, .toast { display: none !important; }
+    .tab-panel { display: none !important; }
+    .tab-panel.active { display: flex !important; flex-direction: column; }
+    .table-card { box-shadow: none; }
     thead th, tfoot tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     tbody tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* hide هل مسامح, مبلغ المسامحة, هل يوجد التزامات columns in Tab 2 */
+    #panel2 th:nth-child(4), #panel2 td:nth-child(4),
+    #panel2 th:nth-child(5), #panel2 td:nth-child(5),
+    #panel2 th:nth-child(6), #panel2 td:nth-child(6) { display: none !important; }
   }
 
+  /* ── Mobile ──────────────────────────── */
   @media (max-width: 640px) {
+
+    /* Full-screen frame — no full-page scroll */
     body {
-      height: 100dvh;
+      height: 100svh;
       overflow: hidden;
-      padding: 0.6rem 0.65rem 0.5rem;
+      padding: 0;
       display: flex;
       flex-direction: column;
     }
@@ -287,63 +283,130 @@
       flex-direction: column;
       flex: 1;
       min-height: 0;
+      /* safe-area insets for notched / pill-button phones */
+      padding-top:    max(env(safe-area-inset-top),    14px);
+      padding-right:  max(env(safe-area-inset-right),  14px);
+      padding-bottom: max(env(safe-area-inset-bottom), 12px);
+      padding-left:   max(env(safe-area-inset-left),   14px);
       gap: 0;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 0.4rem;
-      flex-shrink: 0;
-    }
-    .eyebrow { display: none; }
-    .header-sub { display: none; }
-    .header h1 { font-size: 20px; font-weight: 700; }
+    /* ── Header ── */
+    .header { margin-bottom: 10px; flex-shrink: 0; }
+    .header h1 { font-size: 22px; letter-spacing: -0.01em; }
 
+    /* ── Tabs ── */
+    .tabs { flex-shrink: 0; margin-bottom: 10px; gap: 8px; }
+    .tab-btn {
+      padding: 0;
+      height: 44px;           /* minimum touch target */
+      font-size: 13.5px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Input card ── */
     .input-card {
       flex-shrink: 0;
-      padding: 0.55rem 0.9rem;
-      margin-bottom: 0.4rem;
+      padding: 0 14px;
+      height: 58px;
+      margin-bottom: 10px;
+      border-radius: 12px;
       gap: 10px;
     }
-    .input-label { font-size: 12px; }
-    .input-card input { font-size: 18px; }
-    .divider-v { height: 22px; }
-    .calc-btn { padding: 7px 14px; font-size: 13px; }
+    .input-label { font-size: 13px; }
+    .input-card input {
+      font-size: 20px;        /* ≥ 16px prevents iOS auto-zoom */
+    }
+    .divider-v { height: 24px; }
+    .calc-btn {
+      padding: 0 18px;
+      height: 36px;
+      font-size: 14px;
+      border-radius: 8px;
+    }
 
+    /* ── Table card ── */
     .table-card {
       flex: 1;
       min-height: 0;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 0.4rem;
+      margin-bottom: 10px;
+      border-radius: 12px;
+    }
+    .card-header { padding: 10px 14px; }
+    .card-title { font-size: 11.5px; letter-spacing: 0.1em; }
+    .count-badge { font-size: 11.5px; padding: 2px 10px; }
+
+    /* Table panel fills remaining card height */
+    .tab-panel.active { flex: 1; min-height: 0; overflow: hidden; }
+    .table-wrapper { height: 100%; overflow-x: auto; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+    /* Tab 2: gradient fade on right edge to hint at horizontal scroll */
+    #panel2 { position: relative; }
+    #panel2::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 40px;
+      height: 100%;
+      background: linear-gradient(to left, rgba(255,255,255,0.85), transparent);
+      pointer-events: none;
+      z-index: 2;
     }
 
-    .card-header { padding: 8px 14px; flex-shrink: 0; }
-    .card-title { font-size: 11px; }
-    .count-badge { font-size: 11px; padding: 1px 9px; }
-
-    .table-wrapper { flex: 1; overflow-y: auto; }
-
+    /* ── Table typography ── */
     table { font-size: 13px; }
-    thead th { padding: 7px 12px; font-size: 11px; }
-    th.hn { width: 44%; }
-    th.hp { width: 20%; }
-    th.ha { width: 36%; }
-    tbody td { padding: 7px 12px; }
-    td.ta { font-size: 13px; }
+    thead th {
+      padding: 8px 12px;
+      font-size: 11px;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tbody td { padding: 10px 12px; }
+    tfoot td { padding: 10px 12px; font-size: 13px; }
+    tfoot .c-num      { font-size: 14px; }
+    tfoot .c-num-bold { font-size: 14px; }
 
-    .pct-badge { font-size: 12px; padding: 2px 8px; }
-    .swatch { width: 7px; height: 7px; }
-    .name-pill { gap: 6px; }
+    /* ── Badges ── */
+    .pct-badge  { font-size: 12px; padding: 2px 9px; }
+    .flag-yes   { font-size: 12px; padding: 2px 8px; }
+    .swatch     { width: 7px; height: 7px; }
+    .name-pill  { gap: 6px; }
+    .c-num-bold { font-size: 13.5px; }
 
-    tfoot td { padding: 8px 12px; font-size: 13px; }
-    tfoot td.ta { font-size: 14px; }
+    /* Tab 1 column widths on mobile */
+    #panel1 table { table-layout: fixed; }
+    #panel1 th:nth-child(1) { width: 45%; }
+    #panel1 th:nth-child(2) { width: 20%; }
+    #panel1 th:nth-child(3) { width: 35%; }
 
-    .export-bar { flex-shrink: 0; gap: 6px; }
-    .exp-btn { padding: 9px 10px; font-size: 13px; min-width: 0; }
+    /* ── Export buttons — full-width row ── */
+    .export-bar { flex-shrink: 0; gap: 8px; flex-wrap: nowrap; }
+    .exp-btn {
+      flex: 1;
+      min-width: 0;
+      height: 48px;           /* comfortable thumb tap */
+      padding: 0 8px;
+      font-size: 13.5px;
+      border-radius: 10px;
+    }
 
-    .toast { font-size: 12px; padding: 7px 14px; margin-top: 6px; }
+    /* ── Toast ── */
+    .toast { font-size: 13px; padding: 8px 14px; margin-top: 8px; }
+  }
+
+  /* Extra-small phones (SE, Galaxy A series) */
+  @media (max-width: 375px) {
+    .header h1 { font-size: 19px; }
+    .tab-btn   { font-size: 12px; }
+    table      { font-size: 12px; }
+    thead th   { font-size: 10px; padding: 7px 10px; }
+    tbody td   { padding: 8px 10px; }
+    .exp-btn   { font-size: 12px; }
   }
 </style>
 </head>
@@ -351,10 +414,13 @@
 <div class="page">
 
   <header class="header">
-    <div class="eyebrow">وثيقة توزيع</div>
     <h1>توزيع الإيجارات</h1>
-    <p class="header-sub">يُوزَّع المبلغ الإجمالي وفق الحصص المحددة لكل مستفيد</p>
   </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="btn-tab1" onclick="switchTab('tab1')">التوزيع العادي</button>
+    <button class="tab-btn"        id="btn-tab2" onclick="switchTab('tab2')">التوزيع مع الخصومات</button>
+  </div>
 
   <div class="input-card">
     <span class="input-label">المبلغ الإجمالي</span>
@@ -368,18 +434,43 @@
       <span class="card-title">جدول التوزيع</span>
       <span class="count-badge" id="count"></span>
     </div>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th class="hn">المستفيد</th>
-            <th class="hp">الحصة</th>
-            <th class="ha">المبلغ (ر.س)</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-        <tfoot id="tfoot"></tfoot>
-      </table>
+
+    <!-- Tab 1 -->
+    <div id="panel1" class="tab-panel active">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>المستفيد</th>
+              <th>الحصة</th>
+              <th>المبلغ (ر.س)</th>
+            </tr>
+          </thead>
+          <tbody id="tbody1"></tbody>
+          <tfoot id="tfoot1"></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab 2 -->
+    <div id="panel2" class="tab-panel">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>النسبة</th>
+              <th>المبلغ</th>
+              <th>هل مسامح</th>
+              <th>مبلغ المسامحة</th>
+              <th>هل يوجد التزامات</th>
+              <th>المبلغ بعد الخصم</th>
+            </tr>
+          </thead>
+          <tbody id="tbody2"></tbody>
+          <tfoot id="tfoot2"></tfoot>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -392,7 +483,6 @@
   <div class="toast" id="toast"></div>
 
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const PALETTE = [
@@ -416,37 +506,115 @@ const people = [
   { name: "هدى",                   pct: 3.60  },
 ];
 
-let currentAmounts = [];
+const peopleWithDeductions = [
+  { name: "الوالدة",               pct: 0.096, samah: true,  yoojad: null  },
+  { name: "الوالدة من نصيب صالح", pct: 0.018, samah: true,  yoojad: null  },
+  { name: "نصيب ورثة صالح",       pct: 0.09,  samah: false, yoojad: null  },
+  { name: "يحيى",                  pct: 0.4,   samah: true,  yoojad: null  },
+  { name: "أحمد",                  pct: 0.072, samah: false, yoojad: null  },
+  { name: "عبدالرحمن",            pct: 0.072, samah: true,  yoojad: null  },
+  { name: "هاني",                  pct: 0.072, samah: false, yoojad: null  },
+  { name: "نورية",                 pct: 0.036, samah: true,  yoojad: null  },
+  { name: "جميلة",                 pct: 0.036, samah: true,  yoojad: 14040 },
+  { name: "منى",                   pct: 0.036, samah: true,  yoojad: null  },
+  { name: "جواهر",                 pct: 0.036, samah: true,  yoojad: 11700 },
+  { name: "هدى",                   pct: 0.036, samah: true,  yoojad: null  },
+];
+
+let activeTab = 'tab1';
+let currentAmounts1 = [];
+let currentTab2Data = [];
 
 function fmt(n) {
   return n.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
 
+function fmtPct(decimalPct) {
+  return +(decimalPct * 100).toFixed(4);
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('btn-tab1').classList.toggle('active', tab === 'tab1');
+  document.getElementById('btn-tab2').classList.toggle('active', tab === 'tab2');
+  document.getElementById('panel1').classList.toggle('active', tab === 'tab1');
+  document.getElementById('panel2').classList.toggle('active', tab === 'tab2');
+  calculate();
+}
+
 function calculate() {
   const total = parseFloat(document.getElementById("totalAmount").value) || 0;
-  const amounts = people.map(p => (p.pct / 100) * total);
-  currentAmounts = amounts;
-
   document.getElementById("count").textContent = `${people.length} مستفيد`;
+  if (activeTab === 'tab1') calculateTab1(total);
+  else calculateTab2(total);
+}
 
-  document.getElementById("tbody").innerHTML = people.map((p, i) => {
+function calculateTab1(total) {
+  const amounts = people.map(p => (p.pct / 100) * total);
+  currentAmounts1 = amounts;
+
+  document.getElementById("tbody1").innerHTML = people.map((p, i) => {
     const color = PALETTE[i % PALETTE.length];
     return `<tr>
-      <td class="tn">
-        <span class="name-pill">
-          <span class="swatch" style="background:${color};"></span>
-          ${p.name}
-        </span>
-      </td>
-      <td class="tp"><span class="pct-badge">${p.pct}%</span></td>
-      <td class="ta" style="color:${color};">${fmt(amounts[i])}</td>
+      <td class="c-name"><span class="name-pill"><span class="swatch" style="background:${color}"></span>${p.name}</span></td>
+      <td class="c-pct"><span class="pct-badge">${p.pct}%</span></td>
+      <td class="c-num-bold" style="color:${color}">${fmt(amounts[i])}</td>
     </tr>`;
   }).join("");
 
-  const totalAmt = amounts.reduce((a, b) => a + b, 0);
-  document.getElementById("tfoot").innerHTML = `<tr>
-    <td class="tn" colspan="2">الإجمالي</td>
-    <td class="ta">${fmt(totalAmt)}</td>
+  const total1 = amounts.reduce((a, b) => a + b, 0);
+  document.getElementById("tfoot1").innerHTML = `<tr>
+    <td class="c-name" colspan="2">الإجمالي</td>
+    <td class="c-num-bold">${fmt(total1)}</td>
+  </tr>`;
+}
+
+function calculateTab2(total) {
+  currentTab2Data = [];
+  let sumAmt = 0, sumSamah = 0, sumAfter = 0;
+
+  const rows = peopleWithDeductions.map((p, i) => {
+    const color      = PALETTE[i % PALETTE.length];
+    const amount     = p.pct * total;
+    const samahAmt   = p.samah ? Math.round(amount * 11 / 39 * 10) / 10 : 0;
+    const yoojadAmt  = p.yoojad || 0;
+    const afterDeduct = amount - samahAmt - yoojadAmt;
+
+    sumAmt   += amount;
+    sumSamah += samahAmt;
+    sumAfter += afterDeduct;
+    currentTab2Data.push({ ...p, amount, samahAmt, yoojadAmt, afterDeduct });
+
+    const afterColor = afterDeduct < 0 ? '#DC2626' : color;
+    const pctDisplay = fmtPct(p.pct);
+
+    const samahCell = p.samah
+      ? `<span class="flag-yes">نعم</span>`
+      : `<span class="flag-dash">—</span>`;
+
+    const yoojadCell = p.yoojad
+      ? `<span style="direction:ltr;font-variant-numeric:tabular-nums;">${p.yoojad.toLocaleString("en-US")}</span>`
+      : `<span class="flag-dash">—</span>`;
+
+    return `<tr>
+      <td class="c-name"><span class="name-pill"><span class="swatch" style="background:${color}"></span>${p.name}</span></td>
+      <td class="c-pct"><span class="pct-badge">${pctDisplay}%</span></td>
+      <td class="c-num">${fmt(amount)}</td>
+      <td class="c-flag">${samahCell}</td>
+      <td class="c-num">${fmt(samahAmt)}</td>
+      <td class="c-flag">${yoojadCell}</td>
+      <td class="c-num-bold" style="color:${afterColor}">${fmt(afterDeduct)}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("tbody2").innerHTML = rows;
+  document.getElementById("tfoot2").innerHTML = `<tr>
+    <td class="c-name" colspan="2">الإجمالي</td>
+    <td class="c-num">${fmt(sumAmt)}</td>
+    <td class="c-flag"></td>
+    <td class="c-num">${fmt(sumSamah)}</td>
+    <td class="c-flag"></td>
+    <td class="c-num-bold"${sumAfter < 0 ? ' style="color:#DC2626"' : ''}>${fmt(sumAfter)}</td>
   </tr>`;
 }
 
@@ -459,54 +627,71 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove("show"), 3000);
 }
 
-function getRows() {
-  return people.map((p, i) => ({
+function getTab1ExportData() {
+  const total = parseFloat(document.getElementById("totalAmount").value) || 0;
+  if (!currentAmounts1.length) calculateTab1(total);
+  const rows = people.map((p, i) => ({ "الاسم": p.name, "النسبة (%)": p.pct, "المبلغ": currentAmounts1[i] }));
+  rows.push({ "الاسم": "الإجمالي", "النسبة (%)": 100, "المبلغ": currentAmounts1.reduce((a,b)=>a+b,0) });
+  return { headers: ["الاسم","النسبة (%)","المبلغ"], rows };
+}
+
+function getTab2ExportData() {
+  const total = parseFloat(document.getElementById("totalAmount").value) || 0;
+  if (!currentTab2Data.length) calculateTab2(total);
+  const headers = ["الاسم","النسبة (%)","المبلغ","هل مسامح","مبلغ المسامحة","هل يوجد التزامات","المبلغ بعد الخصم"];
+  const rows = currentTab2Data.map(p => ({
     "الاسم": p.name,
-    "النسبة (%)": p.pct,
-    "المبلغ": currentAmounts[i]
+    "النسبة (%)": fmtPct(p.pct),
+    "المبلغ": p.amount,
+    "هل مسامح": p.samah ? "نعم" : "—",
+    "مبلغ المسامحة": p.samahAmt,
+    "هل يوجد التزامات": p.yoojad || "—",
+    "المبلغ بعد الخصم": p.afterDeduct,
   }));
+  rows.push({
+    "الاسم": "الإجمالي", "النسبة (%)": 100,
+    "المبلغ": currentTab2Data.reduce((a,p)=>a+p.amount,0),
+    "هل مسامح": "",
+    "مبلغ المسامحة": currentTab2Data.reduce((a,p)=>a+p.samahAmt,0),
+    "هل يوجد التزامات": "",
+    "المبلغ بعد الخصم": currentTab2Data.reduce((a,p)=>a+p.afterDeduct,0),
+  });
+  return { headers, rows };
 }
 
 function exportCSV() {
-  if (!currentAmounts.length) calculate();
+  const { headers, rows } = activeTab === 'tab1' ? getTab1ExportData() : getTab2ExportData();
   const total = parseFloat(document.getElementById("totalAmount").value) || 0;
-  const rows = getRows();
-  const totalAmt = currentAmounts.reduce((a, b) => a + b, 0);
-  rows.push({ "الاسم": "الإجمالي", "النسبة (%)": 100, "المبلغ": totalAmt });
-
   const BOM = "﻿";
-  const headers = ["الاسم", "النسبة (%)", "المبلغ"];
-  const csvLines = [headers.join(","), ...rows.map(r => headers.map(h => `"${r[h]}"`).join(","))];
-  const blob = new Blob([BOM + csvLines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const lines = [headers.join(","), ...rows.map(r => headers.map(h => `"${r[h]}"`).join(","))];
+  const blob = new Blob([BOM + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = `توزيع_الإيجارات_${total}.csv`;
-  a.click();
+  a.href = url; a.download = `توزيع_الإيجارات_${total}.csv`; a.click();
   URL.revokeObjectURL(url);
   showToast("تم تصدير ملف CSV بنجاح ✓");
 }
 
 function exportExcel() {
-  if (!currentAmounts.length) calculate();
+  const { headers, rows } = activeTab === 'tab1' ? getTab1ExportData() : getTab2ExportData();
   const total = parseFloat(document.getElementById("totalAmount").value) || 0;
-  const rows = getRows();
-  const totalAmt = currentAmounts.reduce((a, b) => a + b, 0);
-  rows.push({ "الاسم": "الإجمالي", "النسبة (%)": 100, "المبلغ": totalAmt });
 
-  const ws = XLSX.utils.json_to_sheet(rows, { header: ["الاسم", "النسبة (%)", "المبلغ"] });
-  ws["!cols"] = [{ wch: 28 }, { wch: 14 }, { wch: 18 }];
+  const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
   ws["!dir"] = "RTL";
+  ws["!cols"] = headers.map((_, i) => ({ wch: i === 0 ? 26 : 16 }));
 
   const headerStyle = {
     font: { bold: true, color: { rgb: "FFFFFF" } },
     fill: { fgColor: { rgb: "1A1917" } },
     alignment: { horizontal: "center", readingOrder: 2 }
   };
-  ["A1", "B1", "C1"].forEach(cell => { if (ws[cell]) ws[cell].s = headerStyle; });
-
+  headers.forEach((_, i) => {
+    const cell = String.fromCharCode(65 + i) + "1";
+    if (ws[cell]) ws[cell].s = headerStyle;
+  });
   const lastRow = rows.length + 1;
-  [`A${lastRow}`, `B${lastRow}`, `C${lastRow}`].forEach(cell => {
+  headers.forEach((_, i) => {
+    const cell = String.fromCharCode(65 + i) + lastRow;
     if (ws[cell]) ws[cell].s = { font: { bold: true }, fill: { fgColor: { rgb: "F5F4F1" } } };
   });
 
