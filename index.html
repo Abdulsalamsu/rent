@@ -5,83 +5,154 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>توزيع الإيجارات</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
 
   :root {
-    --bg:             #EDECEA;
-    --surface:        #FFFFFF;
-    --surface-2:      #F5F4F1;
-    --border:         #E3E1DC;
-    --border-strong:  #C8C5BE;
-    --text:           #1A1917;
-    --text-2:         #5C5A56;
-    --text-3:         #9C9994;
-    --accent:         #1A1917;
-    --accent-hover:   #3A3835;
-    --success-bg:     #F0FDF4;
-    --success-text:   #15803D;
-    --success-border: #BBF7D0;
-    --r:              12px;
-    --r-sm:           8px;
+    --bg-1:           #0D1B2A;
+    --bg-2:           #1B2A3F;
+    --card:           rgba(255,255,255,0.055);
+    --card-hover:     rgba(255,255,255,0.085);
+    --card-border:    rgba(255,255,255,0.10);
+    --card-border-hi: rgba(255,255,255,0.20);
+    --gold:           #F0B429;
+    --gold-hover:     #F5C842;
+    --gold-glow:      rgba(240,180,41,0.18);
+    --text:           #EEF0F3;
+    --text-2:         #9AABB8;
+    --text-3:         #59717F;
+    --success:        #10B981;
+    --success-bg:     rgba(16,185,129,0.12);
+    --danger:         #EF4444;
+    --r:              16px;
+    --r-sm:           10px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   button { touch-action: manipulation; }
 
   body {
     font-family: 'Cairo', sans-serif;
-    background: var(--bg);
+    background: linear-gradient(150deg, var(--bg-1) 0%, var(--bg-2) 60%, #10243A 100%);
+    background-attachment: fixed;
     color: var(--text);
     min-height: 100vh;
-    padding: 2.5rem 1rem 3rem;
+    padding: 2rem 1rem 3rem;
     direction: rtl;
   }
 
-  .page { max-width: 760px; margin: 0 auto; }
-
-  /* ── Header ─────────────────────────── */
-  .header { text-align: center; margin-bottom: 1.25rem; }
-  .header h1 { font-size: 36px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; }
-
-  /* ── Tabs ────────────────────────────── */
-  .tabs { display: flex; gap: 8px; margin-bottom: 0.75rem; }
-  .tab-btn {
-    flex: 1;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: var(--r-sm);
-    cursor: pointer;
-    font-family: 'Cairo', sans-serif;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-2);
-    transition: all 0.15s;
-    text-align: center;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  /* ambient glow orb */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -30%;
+    right: -15%;
+    width: 55%;
+    height: 70%;
+    background: radial-gradient(ellipse, rgba(240,180,41,0.07) 0%, transparent 68%);
+    pointer-events: none;
+    z-index: 0;
   }
-  .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: none; }
-  .tab-btn:not(.active):hover { background: var(--surface-2); color: var(--text); }
+
+  .page { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ── Header ──────────────────────────── */
+  .header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+    padding: 1.5rem 1rem 0.5rem;
+  }
+  .header-eyebrow {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.55rem;
+  }
+  .header h1 {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    background: linear-gradient(135deg, #fff 20%, #C4AE86 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header-sub {
+    font-size: 13.5px;
+    color: var(--text-3);
+    margin-top: 0.45rem;
+  }
+
+  /* ── Stats strip ─────────────────────── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.1rem;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--r);
+    padding: 1rem 1.1rem;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    text-align: center;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .stat-card:hover { background: var(--card-hover); border-color: var(--card-border-hi); }
+  .stat-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    color: var(--text-3);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+  .stat-value {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text);
+    direction: ltr;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.25;
+  }
+  .stat-value.gold { color: var(--gold); }
 
   /* ── Input card ──────────────────────── */
   .input-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--card);
+    border: 1px solid var(--card-border);
     border-radius: var(--r);
-    padding: 1.1rem 1.4rem;
-    margin-bottom: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.9rem;
     display: flex;
     align-items: center;
     gap: 14px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .input-label { font-size: 14px; font-weight: 500; color: var(--text-3); white-space: nowrap; }
-  .divider-v { width: 1px; height: 30px; background: var(--border); flex-shrink: 0; }
+  .input-card:focus-within {
+    border-color: rgba(240,180,41,0.5);
+    box-shadow: 0 0 0 3px var(--gold-glow), 0 2px 12px rgba(0,0,0,0.35);
+  }
+  .input-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+  .divider-v { width: 1px; height: 28px; background: var(--card-border); flex-shrink: 0; }
   .input-card input {
     flex: 1;
     font-family: 'Cairo', monospace;
-    font-size: 26px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 700;
     color: var(--text);
     border: none;
     background: transparent;
@@ -92,42 +163,94 @@
   }
   .input-card input::placeholder { color: var(--text-3); font-weight: 300; }
   .calc-btn {
-    padding: 10px 24px;
-    font-size: 15px;
-    font-weight: 500;
-    background: var(--accent);
-    color: #fff;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    background: var(--gold);
+    color: #0D1B2A;
     border: none;
     border-radius: var(--r-sm);
     cursor: pointer;
     font-family: 'Cairo', sans-serif;
     white-space: nowrap;
-    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.03em;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+    box-shadow: 0 2px 10px rgba(240,180,41,0.35);
   }
-  .calc-btn:hover  { background: var(--accent-hover); }
+  .calc-btn:hover  { background: var(--gold-hover); box-shadow: 0 4px 20px rgba(240,180,41,0.45); transform: translateY(-1px); }
   .calc-btn:active { transform: scale(0.97); }
+
+  /* ── Tabs ────────────────────────────── */
+  .tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 0.85rem;
+    background: rgba(0,0,0,0.25);
+    padding: 5px;
+    border-radius: var(--r);
+    border: 1px solid var(--card-border);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: calc(var(--r) - 4px);
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    transition: all 0.2s;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .tab-btn.active {
+    background: var(--gold);
+    color: #0D1B2A;
+    font-weight: 700;
+    box-shadow: 0 2px 12px rgba(240,180,41,0.35);
+  }
+  .tab-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.06); }
 
   /* ── Table card ──────────────────────── */
   .table-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--card);
+    border: 1px solid var(--card-border);
     border-radius: var(--r);
     overflow: hidden;
-    margin-bottom: 0.75rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 0.9rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.45);
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
   }
   .card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 13px 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--card-border);
     flex-shrink: 0;
+    background: rgba(0,0,0,0.18);
   }
-  .card-title { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: var(--text-2); text-transform: uppercase; }
-  .count-badge { font-size: 13px; color: var(--text-3); background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 11px; }
+  .card-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--text-2);
+    text-transform: uppercase;
+  }
+  .count-badge {
+    font-size: 12px;
+    color: var(--gold);
+    background: var(--gold-glow);
+    border: 1px solid rgba(240,180,41,0.28);
+    border-radius: 20px;
+    padding: 2px 12px;
+    font-weight: 700;
+  }
 
   /* ── Tab panels ──────────────────────── */
   .tab-panel { display: none; }
@@ -136,35 +259,36 @@
   /* ── Tables ──────────────────────────── */
   .table-wrapper { overflow-x: auto; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 15.5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
   thead th {
     padding: 11px 16px;
-    font-size: 12.5px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
     color: var(--text-3);
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.22);
+    border-bottom: 1px solid var(--card-border);
     text-transform: uppercase;
     white-space: nowrap;
   }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.045); transition: background 0.12s; }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface-2); }
+  tbody tr:hover { background: rgba(255,255,255,0.04); }
   tbody td { padding: 13px 16px; vertical-align: middle; }
 
-  tfoot tr { border-top: 1.5px solid var(--border-strong); background: var(--surface-2); }
-  tfoot td { padding: 14px 16px; font-weight: 600; color: var(--text); font-size: 14px; }
+  tfoot tr { border-top: 1px solid rgba(240,180,41,0.25); background: rgba(240,180,41,0.07); }
+  tfoot td { padding: 14px 16px; font-weight: 700; color: var(--text); font-size: 14px; }
 
   /* ── Cell helpers ────────────────────── */
-  .c-name { text-align: right; font-weight: 500; }
-  .c-pct  { text-align: center; }
-  .c-num  { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; }
-  .c-flag { text-align: center; }
-  .c-num-bold { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px; }
-  tfoot .c-num      { font-weight: 700; font-size: 15px; }
-  tfoot .c-num-bold { font-size: 16px; font-weight: 700; }
-  tfoot .c-name     { color: var(--text-2); font-weight: 500; }
+  .c-name     { text-align: right; font-weight: 500; }
+  .c-pct      { text-align: center; }
+  .c-num      { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; color: var(--text-2); }
+  .c-flag     { text-align: center; }
+  .c-num-bold { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; font-weight: 700; font-size: 15px; }
+
+  tfoot .c-num      { font-weight: 700; font-size: 14.5px; color: var(--text); }
+  tfoot .c-num-bold { font-size: 16px; font-weight: 700; color: var(--gold); }
+  tfoot .c-name     { color: var(--text-2); font-weight: 600; }
 
   /* Tab 1 column widths */
   #panel1 table { table-layout: fixed; }
@@ -172,7 +296,7 @@
   #panel1 th:nth-child(2) { text-align: center; width: 18%; }
   #panel1 th:nth-child(3) { text-align: left; direction: ltr; width: 34%; }
 
-  /* Tab 2 — auto layout, allow horizontal scroll */
+  /* Tab 2 auto layout */
   #panel2 table { table-layout: auto; min-width: 700px; }
   #panel2 th:nth-child(1) { text-align: right; }
   #panel2 th:nth-child(2) { text-align: center; }
@@ -184,16 +308,22 @@
 
   /* ── Badges ──────────────────────────── */
   .name-pill { display: inline-flex; align-items: center; gap: 8px; }
-  .swatch { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; opacity: 0.85; }
+  .swatch {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px currentColor;
+    opacity: 0.9;
+  }
 
   .pct-badge {
     display: inline-block;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.11);
     border-radius: 20px;
-    padding: 3px 12px;
-    font-size: 14px;
-    font-weight: 500;
+    padding: 3px 11px;
+    font-size: 13.5px;
+    font-weight: 600;
     color: var(--text-2);
     direction: ltr;
     font-variant-numeric: tabular-nums;
@@ -201,13 +331,13 @@
 
   .flag-yes {
     display: inline-block;
-    background: #ECFDF5;
-    color: #059669;
-    border: 1px solid #A7F3D0;
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid rgba(16,185,129,0.28);
     border-radius: 20px;
     padding: 2px 10px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
   }
   .flag-dash { color: var(--text-3); }
 
@@ -217,66 +347,93 @@
     flex: 1;
     min-width: 120px;
     padding: 13px 18px;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 14.5px;
+    font-weight: 600;
     border-radius: var(--r-sm);
     cursor: pointer;
     font-family: 'Cairo', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     transition: all 0.15s;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    letter-spacing: 0.02em;
   }
-  .exp-btn.primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
-  .exp-btn.primary:hover { background: var(--accent-hover); }
-  .exp-btn.ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); }
-  .exp-btn.ghost:hover { background: var(--surface-2); }
-  .exp-btn:active { transform: scale(0.97); }
+  .exp-btn.primary {
+    background: var(--gold);
+    color: #0D1B2A;
+    border: 1px solid var(--gold);
+    box-shadow: 0 2px 12px rgba(240,180,41,0.28);
+  }
+  .exp-btn.primary:hover {
+    background: var(--gold-hover);
+    box-shadow: 0 4px 22px rgba(240,180,41,0.45);
+    transform: translateY(-1px);
+  }
+  .exp-btn.ghost {
+    background: var(--card);
+    color: var(--text-2);
+    border: 1px solid var(--card-border-hi);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .exp-btn.ghost:hover {
+    background: var(--card-hover);
+    color: var(--text);
+    border-color: rgba(255,255,255,0.28);
+    transform: translateY(-1px);
+  }
+  .exp-btn:active { transform: scale(0.97) translateY(0) !important; }
 
   /* ── Toast ───────────────────────────── */
   .toast {
     display: none;
     text-align: center;
-    font-size: 12.5px;
-    color: var(--success-text);
+    font-size: 13px;
+    color: var(--success);
     background: var(--success-bg);
-    border: 1px solid var(--success-border);
+    border: 1px solid rgba(16,185,129,0.28);
     border-radius: var(--r-sm);
-    padding: 10px 20px;
+    padding: 11px 20px;
     margin-top: 10px;
-    font-weight: 500;
-    animation: fadeIn 0.2s ease;
+    font-weight: 600;
+    animation: fadeUp 0.22s ease;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
   }
   .toast.show { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
 
   /* ── Print ───────────────────────────── */
   @media print {
-    body { background: #fff; padding: 0; }
-    .tabs, .input-card, .export-bar, .toast { display: none !important; }
+    body { background: #fff; padding: 0; color: #000; }
+    body::before { display: none; }
+    .tabs, .input-card, .export-bar, .toast, .stats-row, .header-eyebrow, .header-sub { display: none !important; }
     .tab-panel { display: none !important; }
     .tab-panel.active { display: flex !important; flex-direction: column; }
-    .table-card { box-shadow: none; }
-    thead th, tfoot tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    tbody tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    /* hide هل مسامح, مبلغ المسامحة, هل يوجد التزامات columns in Tab 2 */
+    .table-card { box-shadow: none; background: #fff; border: 1px solid #ddd; }
+    .card-header { background: #f5f5f5; }
+    .card-title, .count-badge { color: #333 !important; background: none !important; border: none; }
+    thead th { background: #f0f0f0 !important; color: #444 !important; }
+    tfoot tr { background: #f8f8f8 !important; }
+    tbody tr:hover { background: none; }
+    tfoot .c-num-bold { color: #000 !important; }
+    .pct-badge { background: #eee !important; color: #333 !important; border-color: #ccc !important; }
+    .flag-yes  { background: #d1fae5 !important; color: #065f46 !important; border-color: #6ee7b7 !important; }
     #panel2 th:nth-child(4), #panel2 td:nth-child(4),
     #panel2 th:nth-child(5), #panel2 td:nth-child(5),
     #panel2 th:nth-child(6), #panel2 td:nth-child(6) { display: none !important; }
+    thead th, tfoot tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 
   /* ── Mobile ──────────────────────────── */
   @media (max-width: 640px) {
-
-    /*
-     * Lock the full page to the viewport.
-     * body + .page form a flex column that fills exactly the screen.
-     * Only .table-wrapper scrolls — nothing else.
-     */
     body {
-      height: 100vh;          /* fallback */
-      height: 100dvh;         /* dynamic — shrinks when browser chrome appears */
+      height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       padding: 0;
       display: flex;
@@ -285,64 +442,64 @@
 
     .page {
       flex: 1;
-      min-height: 0;          /* critical: lets flex children shrink below content size */
+      min-height: 0;
       display: flex;
       flex-direction: column;
-      /* safe areas for notched / pill-button phones */
-      padding-top:    max(env(safe-area-inset-top),    14px);
-      padding-right:  max(env(safe-area-inset-right),  14px);
-      padding-bottom: max(env(safe-area-inset-bottom), 12px);
-      padding-left:   max(env(safe-area-inset-left),   14px);
+      padding-top:    max(env(safe-area-inset-top),    12px);
+      padding-right:  max(env(safe-area-inset-right),  12px);
+      padding-bottom: max(env(safe-area-inset-bottom), 10px);
+      padding-left:   max(env(safe-area-inset-left),   12px);
     }
 
-    /* ── Fixed elements (never shrink) ── */
-    .header      { flex-shrink: 0; margin-bottom: 8px; }
-    .tabs        { flex-shrink: 0; margin-bottom: 8px; gap: 8px; }
-    .input-card  { flex-shrink: 0; margin-bottom: 8px; }
-    .export-bar  { flex-shrink: 0; }
+    .header     { flex-shrink: 0; margin-bottom: 9px; padding: 0.4rem 0 0; }
+    .stats-row  { flex-shrink: 0; margin-bottom: 8px; }
+    .tabs       { flex-shrink: 0; margin-bottom: 7px; }
+    .input-card { flex-shrink: 0; margin-bottom: 7px; }
+    .export-bar { flex-shrink: 0; }
 
-    /* ── Header ── */
-    .header h1 { font-size: 21px; }
+    .header-eyebrow { font-size: 9.5px; }
+    .header h1  { font-size: 21px; }
+    .header-sub { display: none; }
 
-    /* ── Tabs: 44px minimum touch target ── */
+    .stats-row { gap: 6px; }
+    .stat-card { padding: 0.55rem 0.65rem; border-radius: 10px; }
+    .stat-label { font-size: 9px; }
+    .stat-value { font-size: 14px; }
+
     .tab-btn {
       padding: 0;
-      height: 44px;
-      font-size: 13px;
-      border-radius: 10px;
+      height: 42px;
+      font-size: 12.5px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    /* ── Input card ── */
     .input-card {
-      height: 54px;
-      padding: 0 14px;
+      height: 52px;
+      padding: 0 12px;
       border-radius: 12px;
       gap: 10px;
     }
-    .input-label { font-size: 12.5px; }
-    .input-card input { font-size: 20px; } /* ≥16px stops iOS zoom */
-    .divider-v { height: 22px; }
-    .calc-btn { padding: 0 16px; height: 34px; font-size: 13.5px; border-radius: 8px; }
+    .input-label  { font-size: 12px; }
+    .input-card input { font-size: 20px; }
+    .divider-v    { height: 22px; }
+    .calc-btn     { padding: 0 14px; height: 34px; font-size: 13px; border-radius: 8px; }
 
-    /* ── Table card: takes ALL remaining vertical space ── */
     .table-card {
       flex: 1;
-      min-height: 0;          /* required so it can actually shrink */
+      min-height: 0;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       border-radius: 12px;
       display: flex;
       flex-direction: column;
     }
 
-    .card-header { flex-shrink: 0; padding: 9px 14px; }
-    .card-title  { font-size: 11px; }
-    .count-badge { font-size: 11px; padding: 2px 9px; }
+    .card-header { flex-shrink: 0; padding: 9px 13px; }
+    .card-title  { font-size: 10.5px; }
+    .count-badge { font-size: 10.5px; padding: 2px 9px; }
 
-    /* Active panel stretches to fill the card */
     .tab-panel.active {
       flex: 1;
       min-height: 0;
@@ -351,12 +508,6 @@
       overflow: hidden;
     }
 
-    /*
-     * THE ONLY SCROLLABLE ELEMENT.
-     * flex: 1 + min-height: 0 makes it fill the panel.
-     * overflow: auto on both axes — vertical for rows, horizontal for Tab 2 columns.
-     * overscroll-behavior: contain stops the page from scrolling when table edge is reached.
-     */
     .table-wrapper {
       flex: 1;
       min-height: 0;
@@ -366,76 +517,54 @@
       overscroll-behavior: contain;
     }
 
-    /* Sticky column headers so they stay visible while scrolling rows */
     thead th {
       position: sticky;
       top: 0;
       z-index: 2;
-      padding: 8px 11px;
-      font-size: 10.5px;
+      padding: 7px 10px;
+      font-size: 9.5px;
     }
 
-    /* Tab 2: right-edge gradient hints that columns continue off-screen */
-    #panel2 .table-wrapper {
-      position: relative;
-    }
-    #panel2 .table-wrapper::after {
-      content: '';
-      position: sticky;
-      display: block;
-      bottom: 0;
-      left: 0;
-      width: 36px;
-      height: 100%;
-      margin-top: -100%;        /* overlay trick — pull up to cover the table */
-      background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    /* ── Table sizes ── */
-    table    { font-size: 13px; }
-    tbody td { padding: 9px 11px; }
-    tfoot td { padding: 9px 11px; font-size: 13px; }
-    tfoot .c-num      { font-size: 13.5px; }
-    tfoot .c-num-bold { font-size: 13.5px; }
-
-    .c-num-bold { font-size: 13px; }
-    .pct-badge  { font-size: 12px; padding: 2px 8px; }
-    .flag-yes   { font-size: 12px; padding: 2px 8px; }
-    .swatch     { width: 7px; height: 7px; }
+    table    { font-size: 12.5px; }
+    tbody td { padding: 9px 10px; }
+    tfoot td { padding: 9px 10px; font-size: 12.5px; }
+    tfoot .c-num      { font-size: 13px; }
+    tfoot .c-num-bold { font-size: 13px; }
+    .c-num-bold { font-size: 12.5px; }
+    .pct-badge  { font-size: 11.5px; padding: 2px 8px; }
+    .flag-yes   { font-size: 11.5px; padding: 2px 7px; }
+    .swatch     { width: 6px; height: 6px; }
     .name-pill  { gap: 5px; }
 
-    /* Tab 1 column widths */
     #panel1 table { table-layout: fixed; }
     #panel1 th:nth-child(1) { width: 45%; }
     #panel1 th:nth-child(2) { width: 20%; }
     #panel1 th:nth-child(3) { width: 35%; }
 
-    /* ── Export buttons: 48px touch target ── */
-    .export-bar { gap: 7px; flex-wrap: nowrap; }
+    .export-bar { gap: 6px; flex-wrap: nowrap; }
     .exp-btn {
       flex: 1;
       min-width: 0;
       height: 46px;
-      padding: 0 6px;
-      font-size: 13px;
+      padding: 0 5px;
+      font-size: 12.5px;
       border-radius: 10px;
+      gap: 4px;
     }
+    .exp-btn svg { width: 13px; height: 13px; }
 
-    /* ── Toast ── */
-    .toast { font-size: 12.5px; padding: 8px 14px; margin-top: 7px; }
+    .toast { font-size: 12px; padding: 8px 14px; margin-top: 6px; }
   }
 
-  /* Extra-small phones (iPhone SE, Galaxy A02) */
   @media (max-width: 375px) {
-    .header h1 { font-size: 18px; }
-    .tab-btn   { font-size: 11.5px; height: 40px; }
-    .input-card { height: 50px; }
-    table      { font-size: 12px; }
-    thead th   { font-size: 10px; padding: 6px 9px; }
-    tbody td   { padding: 7px 9px; }
-    .exp-btn   { font-size: 12px; height: 42px; }
+    .header h1  { font-size: 18px; }
+    .tab-btn    { font-size: 11px; height: 38px; }
+    .input-card { height: 48px; }
+    .stat-value { font-size: 12px; }
+    table       { font-size: 11.5px; }
+    thead th    { font-size: 9px; padding: 6px 8px; }
+    tbody td    { padding: 7px 8px; }
+    .exp-btn    { font-size: 11.5px; height: 42px; }
   }
 </style>
 </head>
@@ -443,12 +572,24 @@
 <div class="page">
 
   <header class="header">
+    <div class="header-eyebrow">إدارة الأصول العقارية</div>
     <h1>توزيع الإيجارات</h1>
+    <div class="header-sub">احتساب وتوزيع العائد الإيجاري على المستفيدين</div>
   </header>
 
-  <div class="tabs">
-    <button class="tab-btn active" id="btn-tab1" onclick="switchTab('tab1')">التوزيع العادي</button>
-    <button class="tab-btn"        id="btn-tab2" onclick="switchTab('tab2')">التوزيع مع الخصومات</button>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">المبلغ الإجمالي</div>
+      <div class="stat-value gold" id="stat-total">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">عدد المستفيدين</div>
+      <div class="stat-value" id="stat-count">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">أعلى حصة</div>
+      <div class="stat-value" id="stat-max">—</div>
+    </div>
   </div>
 
   <div class="input-card">
@@ -456,6 +597,11 @@
     <div class="divider-v"></div>
     <input type="number" id="totalAmount" value="702200" min="0" step="1" placeholder="أدخل المبلغ" />
     <button class="calc-btn" onclick="calculate()">احتساب</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="btn-tab1" onclick="switchTab('tab1')">التوزيع العادي</button>
+    <button class="tab-btn"        id="btn-tab2" onclick="switchTab('tab2')">التوزيع مع الخصومات</button>
   </div>
 
   <div class="table-card">
@@ -504,9 +650,18 @@
   </div>
 
   <div class="export-bar">
-    <button class="exp-btn primary" onclick="exportCSV()">تصدير CSV</button>
-    <button class="exp-btn ghost"   onclick="exportExcel()">تصدير Excel</button>
-    <button class="exp-btn ghost"   onclick="window.print()">طباعة / PDF</button>
+    <button class="exp-btn primary" onclick="exportCSV()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      تصدير CSV
+    </button>
+    <button class="exp-btn ghost" onclick="exportExcel()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      تصدير Excel
+    </button>
+    <button class="exp-btn ghost" onclick="window.print()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      طباعة / PDF
+    </button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -515,9 +670,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const PALETTE = [
-  "#2D6A4F","#1D3557","#6B3A5D","#B5451B","#8B6914",
-  "#3D5A80","#40916C","#457B9D","#9B5DE5","#D4A017",
-  "#C08B00","#6A4C93"
+  "#F59E0B","#3B82F6","#10B981","#EF4444","#8B5CF6",
+  "#06B6D4","#F97316","#EC4899","#84CC16","#A78BFA",
+  "#14B8A6","#FB923C"
 ];
 
 const people = [
@@ -557,9 +712,13 @@ let currentTab2Data = [];
 function fmt(n) {
   return n.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
+function fmtPct(d) { return +(d * 100).toFixed(4); }
 
-function fmtPct(decimalPct) {
-  return +(decimalPct * 100).toFixed(4);
+function updateStats(total) {
+  document.getElementById('stat-total').textContent = total ? fmt(total) : '—';
+  document.getElementById('stat-count').textContent = people.length;
+  const top = people.reduce((a, b) => a.pct > b.pct ? a : b);
+  document.getElementById('stat-max').textContent = top.name;
 }
 
 function switchTab(tab) {
@@ -574,6 +733,7 @@ function switchTab(tab) {
 function calculate() {
   const total = parseFloat(document.getElementById("totalAmount").value) || 0;
   document.getElementById("count").textContent = `${people.length} مستفيد`;
+  updateStats(total);
   if (activeTab === 'tab1') calculateTab1(total);
   else calculateTab2(total);
 }
@@ -583,18 +743,18 @@ function calculateTab1(total) {
   currentAmounts1 = amounts;
 
   document.getElementById("tbody1").innerHTML = people.map((p, i) => {
-    const color = PALETTE[i % PALETTE.length];
+    const c = PALETTE[i % PALETTE.length];
     return `<tr>
-      <td class="c-name"><span class="name-pill"><span class="swatch" style="background:${color}"></span>${p.name}</span></td>
+      <td class="c-name"><span class="name-pill"><span class="swatch" style="background:${c};color:${c}"></span>${p.name}</span></td>
       <td class="c-pct"><span class="pct-badge">${p.pct}%</span></td>
-      <td class="c-num-bold" style="color:${color}">${fmt(amounts[i])}</td>
+      <td class="c-num-bold" style="color:${c}">${fmt(amounts[i])}</td>
     </tr>`;
   }).join("");
 
-  const total1 = amounts.reduce((a, b) => a + b, 0);
+  const tot = amounts.reduce((a, b) => a + b, 0);
   document.getElementById("tfoot1").innerHTML = `<tr>
     <td class="c-name" colspan="2">الإجمالي</td>
-    <td class="c-num-bold">${fmt(total1)}</td>
+    <td class="c-num-bold">${fmt(tot)}</td>
   </tr>`;
 }
 
@@ -603,36 +763,31 @@ function calculateTab2(total) {
   let sumAmt = 0, sumSamah = 0, sumAfter = 0;
 
   const rows = peopleWithDeductions.map((p, i) => {
-    const color      = PALETTE[i % PALETTE.length];
-    const amount     = p.pct * total;
-    const samahAmt   = p.samah ? Math.round(amount * 11 / 39 * 10) / 10 : 0;
-    const yoojadAmt  = p.yoojad || 0;
-    const afterDeduct = amount - samahAmt - yoojadAmt;
+    const c         = PALETTE[i % PALETTE.length];
+    const amount    = p.pct * total;
+    const samahAmt  = p.samah ? Math.round(amount * 11 / 39 * 10) / 10 : 0;
+    const yoojadAmt = p.yoojad || 0;
+    const after     = amount - samahAmt - yoojadAmt;
 
-    sumAmt   += amount;
-    sumSamah += samahAmt;
-    sumAfter += afterDeduct;
-    currentTab2Data.push({ ...p, amount, samahAmt, yoojadAmt, afterDeduct });
+    sumAmt += amount; sumSamah += samahAmt; sumAfter += after;
+    currentTab2Data.push({ ...p, amount, samahAmt, yoojadAmt, afterDeduct: after });
 
-    const afterColor = afterDeduct < 0 ? '#DC2626' : color;
-    const pctDisplay = fmtPct(p.pct);
+    const ac = after < 0 ? '#EF4444' : c;
+    const pctD = fmtPct(p.pct);
 
-    const samahCell = p.samah
-      ? `<span class="flag-yes">نعم</span>`
-      : `<span class="flag-dash">—</span>`;
-
+    const samahCell  = p.samah ? `<span class="flag-yes">نعم</span>` : `<span class="flag-dash">—</span>`;
     const yoojadCell = p.yoojad
-      ? `<span style="direction:ltr;font-variant-numeric:tabular-nums;">${p.yoojad.toLocaleString("en-US")}</span>`
+      ? `<span style="direction:ltr;font-variant-numeric:tabular-nums;color:var(--text-2)">${p.yoojad.toLocaleString("en-US")}</span>`
       : `<span class="flag-dash">—</span>`;
 
     return `<tr>
-      <td class="c-name"><span class="name-pill"><span class="swatch" style="background:${color}"></span>${p.name}</span></td>
-      <td class="c-pct"><span class="pct-badge">${pctDisplay}%</span></td>
+      <td class="c-name"><span class="name-pill"><span class="swatch" style="background:${c};color:${c}"></span>${p.name}</span></td>
+      <td class="c-pct"><span class="pct-badge">${pctD}%</span></td>
       <td class="c-num">${fmt(amount)}</td>
       <td class="c-flag">${samahCell}</td>
       <td class="c-num">${fmt(samahAmt)}</td>
       <td class="c-flag">${yoojadCell}</td>
-      <td class="c-num-bold" style="color:${afterColor}">${fmt(afterDeduct)}</td>
+      <td class="c-num-bold" style="color:${ac}">${fmt(after)}</td>
     </tr>`;
   }).join("");
 
@@ -643,7 +798,7 @@ function calculateTab2(total) {
     <td class="c-flag"></td>
     <td class="c-num">${fmt(sumSamah)}</td>
     <td class="c-flag"></td>
-    <td class="c-num-bold"${sumAfter < 0 ? ' style="color:#DC2626"' : ''}>${fmt(sumAfter)}</td>
+    <td class="c-num-bold"${sumAfter < 0 ? ' style="color:#EF4444"' : ''}>${fmt(sumAfter)}</td>
   </tr>`;
 }
 
@@ -678,7 +833,7 @@ function getTab2ExportData() {
     "المبلغ بعد الخصم": p.afterDeduct,
   }));
   rows.push({
-    "الاسم": "الإجمالي", "النسبة (%)": 100,
+    "الاسم": "الإجمالي","النسبة (%)": 100,
     "المبلغ": currentTab2Data.reduce((a,p)=>a+p.amount,0),
     "هل مسامح": "",
     "مبلغ المسامحة": currentTab2Data.reduce((a,p)=>a+p.samahAmt,0),
@@ -704,26 +859,9 @@ function exportCSV() {
 function exportExcel() {
   const { headers, rows } = activeTab === 'tab1' ? getTab1ExportData() : getTab2ExportData();
   const total = parseFloat(document.getElementById("totalAmount").value) || 0;
-
   const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
   ws["!dir"] = "RTL";
   ws["!cols"] = headers.map((_, i) => ({ wch: i === 0 ? 26 : 16 }));
-
-  const headerStyle = {
-    font: { bold: true, color: { rgb: "FFFFFF" } },
-    fill: { fgColor: { rgb: "1A1917" } },
-    alignment: { horizontal: "center", readingOrder: 2 }
-  };
-  headers.forEach((_, i) => {
-    const cell = String.fromCharCode(65 + i) + "1";
-    if (ws[cell]) ws[cell].s = headerStyle;
-  });
-  const lastRow = rows.length + 1;
-  headers.forEach((_, i) => {
-    const cell = String.fromCharCode(65 + i) + lastRow;
-    if (ws[cell]) ws[cell].s = { font: { bold: true }, fill: { fgColor: { rgb: "F5F4F1" } } };
-  });
-
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "توزيع الإيجارات");
   XLSX.writeFile(wb, `توزيع_الإيجارات_${total}.xlsx`);
