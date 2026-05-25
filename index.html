@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>توزيع الإيجارات</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg:             #EDECEA;
+    --surface:        #FFFFFF;
+    --surface-2:      #F5F4F1;
+    --border:         #E3E1DC;
+    --border-strong:  #C8C5BE;
+    --text:           #1A1917;
+    --text-2:         #5C5A56;
+    --text-3:         #9C9994;
+    --accent:         #1A1917;
+    --accent-hover:   #3A3835;
+    --success-bg:     #F0FDF4;
+    --success-text:   #15803D;
+    --success-border: #BBF7D0;
+    --r:              12px;
+    --r-sm:           8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2.5rem 1rem 3rem;
+    direction: rtl;
+  }
+
+  .page { max-width: 660px; margin: 0 auto; }
+
+  /* ── Header ─────────────────────────── */
+  .header { text-align: center; margin-bottom: 2rem; }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--text-3);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--border-strong);
+  }
+
+  .header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .header-sub {
+    font-size: 15px;
+    color: var(--text-3);
+    margin-top: 8px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── Input card ──────────────────────── */
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .input-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-3);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+  }
+  .divider-v { width: 1px; height: 30px; background: var(--border); flex-shrink: 0; }
+  .input-card input {
+    flex: 1;
+    font-family: 'Cairo', monospace;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    border: none;
+    background: transparent;
+    text-align: center;
+    direction: ltr;
+    outline: none;
+    min-width: 0;
+  }
+  .input-card input::placeholder { color: var(--text-3); font-weight: 300; }
+  .calc-btn {
+    padding: 10px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    white-space: nowrap;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+  .calc-btn:hover  { background: var(--accent-hover); }
+  .calc-btn:active { transform: scale(0.97); }
+
+  /* ── Table card ──────────────────────── */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-2);
+    text-transform: uppercase;
+  }
+  .count-badge {
+    font-size: 13px;
+    color: var(--text-3);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 11px;
+    font-weight: 400;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15.5px;
+    table-layout: fixed;
+  }
+  thead th {
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+  th.hn { text-align: right; width: 46%; }
+  th.hp { text-align: center; width: 20%; }
+  th.ha { text-align: left; width: 34%; direction: ltr; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-2); }
+
+  tbody td { padding: 15px 20px; vertical-align: middle; }
+  td.tn { text-align: right; font-weight: 500; color: var(--text); }
+  td.tp { text-align: center; direction: ltr; }
+  td.ta { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 16px; }
+
+  .name-pill { display: inline-flex; align-items: center; gap: 8px; }
+  .swatch { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; opacity: 0.85; }
+
+  .pct-badge {
+    display: inline-block;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-2);
+    direction: ltr;
+    font-variant-numeric: tabular-nums;
+  }
+
+  tfoot tr { border-top: 1.5px solid var(--border-strong); background: var(--surface-2); }
+  tfoot td { padding: 16px 20px; font-weight: 600; color: var(--text); font-size: 15px; }
+  tfoot td.ta { direction: ltr; font-size: 18px; font-weight: 700; }
+  tfoot td.tn { color: var(--text-2); font-weight: 500; }
+
+  /* ── Export bar ──────────────────────── */
+  .export-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+  .exp-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 13px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .exp-btn.primary {
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid var(--accent);
+  }
+  .exp-btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .exp-btn.ghost {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+  }
+  .exp-btn.ghost:hover { background: var(--surface-2); }
+  .exp-btn:active { transform: scale(0.97); }
+
+  /* ── Toast ───────────────────────────── */
+  .toast {
+    display: none;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--success-text);
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    border-radius: var(--r-sm);
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-weight: 500;
+    animation: fadeIn 0.2s ease;
+  }
+  .toast.show { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* ── Print ───────────────────────────── */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .input-card, .export-bar, .toast { display: none !important; }
+    .table-card, .page { box-shadow: none; }
+    .header { margin-bottom: 1rem; }
+    thead th, tfoot tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tbody tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  @media (max-width: 640px) {
+    body {
+      height: 100dvh;
+      overflow: hidden;
+      padding: 0.6rem 0.65rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      gap: 0;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 0.4rem;
+      flex-shrink: 0;
+    }
+    .eyebrow { display: none; }
+    .header-sub { display: none; }
+    .header h1 { font-size: 20px; font-weight: 700; }
+
+    .input-card {
+      flex-shrink: 0;
+      padding: 0.55rem 0.9rem;
+      margin-bottom: 0.4rem;
+      gap: 10px;
+    }
+    .input-label { font-size: 12px; }
+    .input-card input { font-size: 18px; }
+    .divider-v { height: 22px; }
+    .calc-btn { padding: 7px 14px; font-size: 13px; }
+
+    .table-card {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-header { padding: 8px 14px; flex-shrink: 0; }
+    .card-title { font-size: 11px; }
+    .count-badge { font-size: 11px; padding: 1px 9px; }
+
+    .table-wrapper { flex: 1; overflow-y: auto; }
+
+    table { font-size: 13px; }
+    thead th { padding: 7px 12px; font-size: 11px; }
+    th.hn { width: 44%; }
+    th.hp { width: 20%; }
+    th.ha { width: 36%; }
+    tbody td { padding: 7px 12px; }
+    td.ta { font-size: 13px; }
+
+    .pct-badge { font-size: 12px; padding: 2px 8px; }
+    .swatch { width: 7px; height: 7px; }
+    .name-pill { gap: 6px; }
+
+    tfoot td { padding: 8px 12px; font-size: 13px; }
+    tfoot td.ta { font-size: 14px; }
+
+    .export-bar { flex-shrink: 0; gap: 6px; }
+    .exp-btn { padding: 9px 10px; font-size: 13px; min-width: 0; }
+
+    .toast { font-size: 12px; padding: 7px 14px; margin-top: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div class="eyebrow">وثيقة توزيع</div>
+    <h1>توزيع الإيجارات</h1>
+    <p class="header-sub">يُوزَّع المبلغ الإجمالي وفق الحصص المحددة لكل مستفيد</p>
+  </header>
+
+  <div class="input-card">
+    <span class="input-label">المبلغ الإجمالي</span>
+    <div class="divider-v"></div>
+    <input type="number" id="totalAmount" value="702200" min="0" step="1" placeholder="أدخل المبلغ" />
+    <button class="calc-btn" onclick="calculate()">احتساب</button>
+  </div>
+
+  <div class="table-card">
+    <div class="card-header">
+      <span class="card-title">جدول التوزيع</span>
+      <span class="count-badge" id="count"></span>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="hn">المستفيد</th>
+            <th class="hp">الحصة</th>
+            <th class="ha">المبلغ (ر.س)</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+        <tfoot id="tfoot"></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="export-bar">
+    <button class="exp-btn primary" onclick="exportCSV()">تصدير CSV</button>
+    <button class="exp-btn ghost"   onclick="exportExcel()">تصدير Excel</button>
+    <button class="exp-btn ghost"   onclick="window.print()">طباعة / PDF</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const PALETTE = [
+  "#2D6A4F","#1D3557","#6B3A5D","#B5451B","#8B6914",
+  "#3D5A80","#40916C","#457B9D","#9B5DE5","#D4A017",
+  "#C08B00","#6A4C93"
+];
+
+const people = [
+  { name: "الوالدة",               pct: 9.60  },
+  { name: "الوالدة من نصيب صالح", pct: 1.80  },
+  { name: "نصيب ورثة صالح",       pct: 9.00  },
+  { name: "يحيى",                  pct: 40.00 },
+  { name: "أحمد",                  pct: 7.20  },
+  { name: "عبدالرحمن",            pct: 7.20  },
+  { name: "هاني",                  pct: 7.20  },
+  { name: "نورية",                 pct: 3.60  },
+  { name: "جميلة",                 pct: 3.60  },
+  { name: "منى",                   pct: 3.60  },
+  { name: "جواهر",                 pct: 3.60  },
+  { name: "هدى",                   pct: 3.60  },
+];
+
+let currentAmounts = [];
+
+function fmt(n) {
+  return n.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+
+function calculate() {
+  const total = parseFloat(document.getElementById("totalAmount").value) || 0;
+  const amounts = people.map(p => (p.pct / 100) * total);
+  currentAmounts = amounts;
+
+  document.getElementById("count").textContent = `${people.length} مستفيد`;
+
+  document.getElementById("tbody").innerHTML = people.map((p, i) => {
+    const color = PALETTE[i % PALETTE.length];
+    return `<tr>
+      <td class="tn">
+        <span class="name-pill">
+          <span class="swatch" style="background:${color};"></span>
+          ${p.name}
+        </span>
+      </td>
+      <td class="tp"><span class="pct-badge">${p.pct}%</span></td>
+      <td class="ta" style="color:${color};">${fmt(amounts[i])}</td>
+    </tr>`;
+  }).join("");
+
+  const totalAmt = amounts.reduce((a, b) => a + b, 0);
+  document.getElementById("tfoot").innerHTML = `<tr>
+    <td class="tn" colspan="2">الإجمالي</td>
+    <td class="ta">${fmt(totalAmt)}</td>
+  </tr>`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.remove("show");
+  void t.offsetWidth;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+function getRows() {
+  return people.map((p, i) => ({
+    "الاسم": p.name,
+    "النسبة (%)": p.pct,
+    "المبلغ": currentAmounts[i]
+  }));
+}
+
+function exportCSV() {
+  if (!currentAmounts.length) calculate();
+  const total = parseFloat(document.getElementById("totalAmount").value) || 0;
+  const rows = getRows();
+  const totalAmt = currentAmounts.reduce((a, b) => a + b, 0);
+  rows.push({ "الاسم": "الإجمالي", "النسبة (%)": 100, "المبلغ": totalAmt });
+
+  const BOM = "﻿";
+  const headers = ["الاسم", "النسبة (%)", "المبلغ"];
+  const csvLines = [headers.join(","), ...rows.map(r => headers.map(h => `"${r[h]}"`).join(","))];
+  const blob = new Blob([BOM + csvLines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `توزيع_الإيجارات_${total}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("تم تصدير ملف CSV بنجاح ✓");
+}
+
+function exportExcel() {
+  if (!currentAmounts.length) calculate();
+  const total = parseFloat(document.getElementById("totalAmount").value) || 0;
+  const rows = getRows();
+  const totalAmt = currentAmounts.reduce((a, b) => a + b, 0);
+  rows.push({ "الاسم": "الإجمالي", "النسبة (%)": 100, "المبلغ": totalAmt });
+
+  const ws = XLSX.utils.json_to_sheet(rows, { header: ["الاسم", "النسبة (%)", "المبلغ"] });
+  ws["!cols"] = [{ wch: 28 }, { wch: 14 }, { wch: 18 }];
+  ws["!dir"] = "RTL";
+
+  const headerStyle = {
+    font: { bold: true, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "1A1917" } },
+    alignment: { horizontal: "center", readingOrder: 2 }
+  };
+  ["A1", "B1", "C1"].forEach(cell => { if (ws[cell]) ws[cell].s = headerStyle; });
+
+  const lastRow = rows.length + 1;
+  [`A${lastRow}`, `B${lastRow}`, `C${lastRow}`].forEach(cell => {
+    if (ws[cell]) ws[cell].s = { font: { bold: true }, fill: { fgColor: { rgb: "F5F4F1" } } };
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "توزيع الإيجارات");
+  XLSX.writeFile(wb, `توزيع_الإيجارات_${total}.xlsx`);
+  showToast("تم تصدير ملف Excel بنجاح ✓");
+}
+
+calculate();
+</script>
+</body>
+</html>
